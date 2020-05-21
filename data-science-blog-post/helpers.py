@@ -46,6 +46,26 @@ def engineer_genre_columns(movies):
         movies[g] = movies['genres'].apply(check_genres)
 
 
+def summarize_movie_data(movies, group_by):
+    """
+    Groups the data and calculates aggregated measures
+    :param movies: DataFrame including movie data
+    :param group_by: List including DataFrame columns for grouping
+    :return summary: DataFrame including grouped and aggregated measures
+    """
+    summary = movies.groupby(group_by).agg(
+        count=('id', 'count'),
+        vote_avg=('vote_average', 'mean'),
+        budget_avg=('budget ($M)', 'mean'),
+        revenue_avg=('revenue ($M)', 'mean'),
+        profit_avg=('profit ($M)', 'mean'))
+
+    summary['roi_avg'] = summary['profit_avg'] / summary['budget_avg']
+    summary
+
+    return summary
+
+
 def plot_genres_over_time(genre_rank_decade):
     """
     Plots a bump chart for genre rankings over time
